@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+#myCanvas {
+    box-sizing: border-box;
+    border: 15px solid #941def;
+    background-color: black;
+    object-fit: contain;
+}
