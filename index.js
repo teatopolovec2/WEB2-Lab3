@@ -133,6 +133,8 @@ function sudariCigle() { //udar loptice u ciglu
                         dyL = -dyL;
                     }
                     a = 1
+                    if (rezultat > localStorage.getItem("max")) localStorage.setItem("max", rezultat)
+                    rez()
                     break
                 }          
             }
@@ -143,8 +145,6 @@ function sudariCigle() { //udar loptice u ciglu
         ctx.clearRect(0,63,c.width, c.height)
         setTimeout(() => {igraGotovaW();}, 100); //ceka da se prvo podrucje igre isprazni
     }
-    if (rezultat > localStorage.getItem("max")) localStorage.setItem("max", rezultat)
-    rez()
 }
 
 function kretanjeLoptice() {
