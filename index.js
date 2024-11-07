@@ -45,7 +45,7 @@ function nacrtajLopticu() {
     ctx.fill();
 }
     
-let interval = setInterval(kretanjeLoptice, (1000 / 500) * Math.sqrt(dxL * dxL + dyL * dyL)); //brzina loptice će uvijek biti konstantna, bez obzira na dxL i dyL
+let interval = setInterval(kretanjeLoptice, (1000 / 600) * Math.sqrt(dxL * dxL + dyL * dyL)); //brzina loptice će uvijek biti konstantna, bez obzira na dxL i dyL
 
 const cigle = [];  //cigle
 const wC = c.width / 15;  //15 cigli u redu
