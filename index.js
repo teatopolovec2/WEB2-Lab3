@@ -161,7 +161,7 @@ function kretanjeLoptice() {
     }
     if (yL + radijus > yP && yL + radijus <= yP + 5 && xL + radijus > xP && xL - radijus < xP + wP) { //udar loptice u palicu
         const sredinaPalice = xP + (wP / 2);
-        if (dxL > 0 && xL > sredinaPalice) dxL = Math.abs(dxL);
+        if (dxL > 0 && xL > sredinaPalice) dxL = Math.abs(dxL); //ako udari u bližu polovicu odbija se natrag inace normalno upadni==ispadni
         else if (dxL < 0 && xL < sredinaPalice) dxL = -Math.abs(dxL);
         else dxL = -dxL;
         dyL = -dyL;
