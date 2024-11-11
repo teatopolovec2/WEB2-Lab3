@@ -1,7 +1,7 @@
 if(!localStorage.getItem("max"))localStorage.setItem("max", 0)	
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
-c.width = window.innerWidth-30;
+c.width = window.innerWidth-30; //canvas preko cijelog zaslona (rub 15px)
 c.height = window.innerHeight-30;
 
 const wP = 300;  //palica
@@ -9,12 +9,11 @@ const hP = 10;
 let xP = (c.width - wP) / 2;
 const yP = c.height - 50;
 const speedP = 20;  
-ctx.shadowBlur = 0;
 
 function nacrtajPalicu(){
     ctx.beginPath();
     ctx.fillStyle = "red";
-    ctx.shadowBlur = 19;
+    ctx.shadowBlur = 19; //sjencanje palice
     ctx.shadowColor = "red";
     ctx.fillRect(xP, yP, wP, hP);
 }
@@ -33,9 +32,9 @@ document.addEventListener('keydown', (event) => { //micanje palice
 const radijus = 10;  //loptica
 let xL = c.width / 2;  
 let yL = yP - radijus;
-let dxL = Math.floor(Math.random() * (8 - 5 + 1)) + 5; //slucajna brzina micanja loptice u smjeru x osi
+let dxL = Math.floor(Math.random() * (8 - 5 + 1)) + 5; //slucajna brzina micanja loptice u smjeru x osi na pocetku
 if (Math.random() > 0.5) dxL = -dxL
-let dyL = -Math.floor(Math.random() * (8 - 5 + 1)) + 5;  //slucajna brzina micanja loptice u smjeru y osi     
+let dyL = -Math.floor(Math.random() * (8 - 5 + 1)) + 5;  //slucajna brzina micanja loptice u smjeru y osi na pocetku  
 
 function nacrtajLopticu() {
     ctx.beginPath();
@@ -45,17 +44,17 @@ function nacrtajLopticu() {
     ctx.fill();
 }
     
-let interval = setInterval(kretanjeLoptice, (1000 / 600) * Math.sqrt(dxL * dxL + dyL * dyL)); //brzina loptice će uvijek biti konstantna, bez obzira na dxL i dyL
+let interval = setInterval(kretanjeLoptice, (1000 / 500) * Math.sqrt(dxL * dxL + dyL * dyL)); //brzina loptice će uvijek biti konstantna, bez obzira na dxL i dyL
 
 const cigle = [];  //cigle
-const wC = c.width / 15;  //15 cigli u redu
+const wC = (c.width-10) / 15;  //15 cigli u redu
 const hC = 40;
 for (let row = 0; row < 3; row++) {// 3 reda po 15 cigla
     cigle[row] = [];
     for (let col = 0; col < 15; col++) {
         cigle[row][col] = {   //za svaku ciglu pamti se pozicija i informacija je li uništena
-            x: col * wC,
-            y: row * hC + 70,
+            x: col * wC+5, //5 da se vidi sjencanje
+            y: row * hC+5, //5 da se vidi sjencanje
             unistena: false
         };
     }
@@ -67,7 +66,7 @@ function nacrtajCigle(){
                 ctx.beginPath();
                 ctx.fillStyle = "#941def";
                 ctx.strokeStyle = "black";
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 10; //sjencanje cigle
                 ctx.shadowColor = "red";
                 ctx.rect(cigla.x, cigla.y, wC, hC);
                 ctx.fill();
@@ -85,9 +84,9 @@ function rez(){  //ispisuje trenutni i maksimalni rezultat
     ctx.font = "20px Verdana";
     ctx.fillStyle = "white";
     var txt = "najbolji rezultat: " + localStorage.getItem("max")
-    ctx.fillText(txt, (c.width - ctx.measureText(txt).width - 5), 25);
+    ctx.fillText(txt, (c.width - ctx.measureText(txt).width - 5), 25); //centriranje
     var txt2 = "rezultat: " + rezultat
-    ctx.fillText(txt2, (c.width - ctx.measureText(txt2).width - 5), 55);
+    ctx.fillText(txt2, (c.width - ctx.measureText(txt2).width - 5), 55); //centriranje
 }
 
 function igraGotovaL(){ //kraj igre - izgubljena
@@ -96,7 +95,7 @@ function igraGotovaL(){ //kraj igre - izgubljena
     ctx.font = "90px Georgia";  
     ctx.fillStyle = "red";
     ctx.textAlign = "start";
-    ctx.fillText("GAME OVER", (c.width - ctx.measureText("GAME OVER").width) / 2, c.height / 2);
+    ctx.fillText("GAME OVER", (c.width - ctx.measureText("GAME OVER").width) / 2, c.height / 2); //centriranje
     ctx.restore();
     clearInterval(interval);
     if (rezultat > localStorage.getItem("max")) {
@@ -133,7 +132,7 @@ function sudariCigle() { //udar loptice u ciglu
                         dyL = -dyL;
                     }
                     a = 1
-                    if (rezultat > localStorage.getItem("max")) localStorage.setItem("max", rezultat)
+                    if (rezultat > localStorage.getItem("max")) localStorage.setItem("max", rezultat) //prikaz novog rezultata nakon sudara
                     rez()
                     break
                 }          
@@ -142,16 +141,16 @@ function sudariCigle() { //udar loptice u ciglu
         if (a==1)break
     }
     if (rezultat == 3*15) { //sve cigle unistene
-        ctx.clearRect(0,63,c.width, c.height)
+        ctx.clearRect(0,0,c.width, c.height)
         setTimeout(() => {igraGotovaW();}, 100); //ceka da se prvo podrucje igre isprazni
     }
 }
 
 function kretanjeLoptice() {
     ctx.clearRect(0, 0, c.width, c.height); //brisanje cijelog canvasa
-    rez(); //ispis rezultata
-    nacrtajPalicu()
     nacrtajCigle()
+    rez(); //ispis rezultata
+    nacrtajPalicu();
     xL = xL + dxL; //nova pozicija loptice
     yL = yL + dyL;
     if (xL + radijus > c.width || xL - radijus < 0) { //udar loptice u bocni okvir canvasa
@@ -161,13 +160,13 @@ function kretanjeLoptice() {
         dyL = -dyL;
     }
     if (yL + radijus > yP && yL + radijus <= yP + 5 && xL + radijus > xP && xL - radijus < xP + wP) { //udar loptice u palicu
-        /**const sredinaPalice = xP + (wP / 2);
+        const sredinaPalice = xP + (wP / 2);
         if (dxL > 0 && xL > sredinaPalice) dxL = Math.abs(dxL);
         else if (dxL < 0 && xL < sredinaPalice) dxL = -Math.abs(dxL);
-        else dxL = -dxL;**/
+        else dxL = -dxL;
         dyL = -dyL;
-    } else if (yL + radijus > c.height) {  //udar loptice u donji okvir
-        ctx.clearRect(0,63,c.width, c.height)
+    } else if (yL + radijus > c.height) {  //loptica izvan donjeg okvira
+        ctx.clearRect(0,0,c.width, c.height)
         setTimeout(() => {igraGotovaL();}, 100); //ceka da se prvo podrucje igre isprazni
     }
     sudariCigle();
