@@ -1,4 +1,4 @@
-if(!localStorage.getItem("max"))localStorage.setItem("max", 0)	
+if(!localStorage.getItem("max"))localStorage.setItem("max", 0)	//najbolji rezultat dosad - "max"
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 c.width = window.innerWidth-30; //canvas preko cijelog zaslona (rub 15px)
@@ -6,7 +6,7 @@ c.height = window.innerHeight-30;
 
 const wP = 300;  //palica
 const hP = 10;
-let xP = (c.width - wP) / 2;
+let xP = (c.width - wP) / 2; //nalazi se na sredini
 const yP = c.height - 50;
 const speedP = 20;  
 
@@ -19,7 +19,9 @@ function nacrtajPalicu(){
 }
 nacrtajPalicu()
 
+let igra = true
 document.addEventListener('keydown', (event) => { //micanje palice
+    if (!igra) return //ako je igra gotova ne radi nista
     ctx.clearRect(xP - 20, yP - 40, wP + 40, hP + 100); //brisanje palice na prethodnoj poziciji
     if (event.key === 'ArrowLeft' && xP - speedP >= 0) { //lijevo
         xP = xP -  speedP;
@@ -30,8 +32,8 @@ document.addEventListener('keydown', (event) => { //micanje palice
 });
 
 const radijus = 10;  //loptica
-let xL = c.width / 2;  
-let yL = yP - radijus;
+let xL = c.width / 2;  //nalazi se na sredini
+let yL = yP - radijus; //nalazi se na palici
 let dxL = Math.floor(Math.random() * (8 - 5 + 1)) + 5; //slucajna brzina micanja loptice u smjeru x osi na pocetku
 if (Math.random() > 0.5) dxL = -dxL
 let dyL = -Math.floor(Math.random() * (8 - 5 + 1)) + 5;  //slucajna brzina micanja loptice u smjeru y osi na pocetku  
@@ -84,9 +86,9 @@ function rez(){  //ispisuje trenutni i maksimalni rezultat
     ctx.font = "20px Verdana";
     ctx.fillStyle = "white";
     var txt = "najbolji rezultat: " + localStorage.getItem("max")
-    ctx.fillText(txt, (c.width - ctx.measureText(txt).width - 5), 25); //centriranje
+    ctx.fillText(txt, (c.width - ctx.measureText(txt).width - 5), 25); //desno poravnato
     var txt2 = "rezultat: " + rezultat
-    ctx.fillText(txt2, (c.width - ctx.measureText(txt2).width - 5), 55); //centriranje
+    ctx.fillText(txt2, (c.width - ctx.measureText(txt2).width - 5), 55); //desno poravnato
 }
 
 function igraGotovaL(){ //kraj igre - izgubljena
@@ -97,8 +99,7 @@ function igraGotovaL(){ //kraj igre - izgubljena
     ctx.textAlign = "start";
     ctx.fillText("GAME OVER", (c.width - ctx.measureText("GAME OVER").width) / 2, c.height / 2); //centriranje
     ctx.restore();
-    clearInterval(interval);
-    if (rezultat > localStorage.getItem("max")) {
+    if (rezultat > localStorage.getItem("max")) { //novi najbolji rezultat
         localStorage.setItem("max", rezultat)
     }
 }
@@ -109,9 +110,9 @@ function igraGotovaW(){  //kraj igre - pobjeda
     ctx.font = "90px Georgia";  //kraj igre
     ctx.fillStyle = "green";
     ctx.textAlign = "start";
-    ctx.fillText("BRAVO!", (c.width - ctx.measureText("BRAVO!").width) / 2, c.height / 2);
+    ctx.fillText("BRAVO!", (c.width - ctx.measureText("BRAVO!").width) / 2, c.height / 2); //centriranje
     ctx.restore();
-    clearInterval(interval);
+    rez()
 }
 
 function sudariCigle() { //udar loptice u ciglu
@@ -124,11 +125,11 @@ function sudariCigle() { //udar loptice u ciglu
                 if (poX && poY) {
                     cigla.unistena = true;
                     rezultat = rezultat + 1
-                    let dno = Math.min(xL + radijus - cigla.x, cigla.x + wC - (xL - radijus)); //loptica je udarila odozgora ili odozdola
-                    let stranica = Math.min(yL + radijus - cigla.y, cigla.y + hC - (yL - radijus));//loptica je udarila bocno
-                    if (dno < stranica) {
+                    let stranica = Math.min(xL + radijus - cigla.x, cigla.x + wC - (xL - radijus));
+                    let dno = Math.min(yL + radijus - cigla.y, cigla.y + hC - (yL - radijus));
+                    if (dno > stranica) { //loptica je udarila bocno
                         dxL = -dxL;
-                    } else {
+                    } else {//loptica je udarila odozgora ili odozdola
                         dyL = -dyL;
                     }
                     a = 1
@@ -141,6 +142,8 @@ function sudariCigle() { //udar loptice u ciglu
         if (a==1)break
     }
     if (rezultat == 3*15) { //sve cigle unistene
+        igra = false
+        clearInterval(interval);
         ctx.clearRect(0,0,c.width, c.height)
         setTimeout(() => {igraGotovaW();}, 100); //ceka da se prvo podrucje igre isprazni
     }
@@ -161,15 +164,18 @@ function kretanjeLoptice() {
     }
     if (yL + radijus > yP && yL + radijus <= yP + 5 && xL + radijus > xP && xL - radijus < xP + wP) { //udar loptice u palicu
         const sredinaPalice = xP + (wP / 2);
-        if (dxL > 0 && xL > sredinaPalice) dxL = Math.abs(dxL); //ako udari u bližu polovicu odbija se natrag inace normalno upadni==ispadni
-        else if (dxL < 0 && xL < sredinaPalice) dxL = -Math.abs(dxL);
-        else dxL = -dxL;
+        //if (dxL > 0 && xL > sredinaPalice) dxL = Math.abs(dxL); //ako udari u bližu polovicu odbija se natrag inace normalno upadni==ispadni
+        //else if (dxL < 0 && xL < sredinaPalice) dxL = -Math.abs(dxL);
+        //else dxL = -dxL;
         dyL = -dyL;
     } else if (yL + radijus > c.height) {  //loptica izvan donjeg okvira
+        igra = false
+        clearInterval(interval);
         ctx.clearRect(0,0,c.width, c.height)
         setTimeout(() => {igraGotovaL();}, 100); //ceka da se prvo podrucje igre isprazni
+        rez()
+        return
     }
-    sudariCigle();
     nacrtajLopticu();
-
+    sudariCigle();
 }
